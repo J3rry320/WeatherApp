@@ -22,8 +22,8 @@
         <div class="intro-body">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="input-group mb-5">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="input-group mb-5 pt-5">
                             <input type="text" id="cityValue" class="form-control" placeholder="Enter The Name Of The City" aria-label="Enter The Name Of The City"
                                 aria-describedby="searchButton">
                             <div class="input-group-append">
@@ -33,108 +33,125 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 ">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
 
-                        <span>
-                            <span>
-                                <h1 id="cityName" class="text-center display-4 left-span">
+                        <div class="card bg-transparent">
+                            <div class="card-body">
+                                <div class="container">
 
-                                </h1>
-                            </span>
-                            <span class="ml-3  left-span">
-                                <span id="flagIcon" class=""></span>
-                            </span>
 
-                        </span>
-                        <br>
-                        <span class="left-span">
+                                    <div class="row">
+                                        <div class="col-md-6 col-sm-12 col-xs-12 border-right">
+                                            <span>
+                                                <span>
+                                                    <h1 id="cityName" class="text-center card-title display-4 left-span">
 
-                            <i class="left-span min-icon fas fa-users"></i>
-                            <h4 class="left-span pt-1" id="population"></h4>
-                        </span>
+                                                    </h1>
+                                                </span>
+                                                <span class="ml-3  left-span">
+                                                    <span id="flagIcon" class=""></span>
+                                                </span>
 
-                        <p id="article"></p>
+                                            </span>
+                                            <br>
+                                            <span class="left-span">
+
+                                                <i class="left-span min-icon fas fa-users"></i>
+                                                <h4 class="left-span pt-1" id="population"></h4>
+                                            </span>
+                                            <br>
+
+                                            <p class="card-text" id="article"></p>
+                                            <a href="#" class="card-link">Check News</a>
+                                        </div>
+                                        <div class="col-md-6 col-sm-12 col-xs-12">
+                                            <span>
+                                                <span class="left-span heading-icon text-center">
+                                                    <i id="iconForCurrent" class=" "></i>
+
+                                                </span>
+                                                <span class="left-span pl-2">
+                                                    <h1 id="temp" class="display-3 left-span text-center"></h1>
+                                                    <i class="big-font left-span wi wi-celsius"></i>
+                                                    <span class="ml-2 border-left "></span>
+                                                    <i class=" pl-2 big-font left-span wi
+                                                            wi-fahrenheit"></i>
+                                                </span>
+                                                <br>
+
+                                                <span>
+                                                    <center>
+
+
+                                                        <span class="left-span min-icon">
+                                                            <i id="min_icon" class="left-span wi wi-thermometer-exterior"></i>
+                                                            <h4 class="left-span" id="minTemp"></h4>
+                                                            <i class="wi wi-celsius"></i>
+                                                        </span>
+                                                        <span class="left-span min-icon pl-2">
+                                                            <i id="max_icon" class="left-span wi-thermometer wi"></i>
+                                                            <h4 class="left-span" id="maxTemp"></h4>
+                                                            <i class=" wi wi-celsius"></i>
+                                                        </span>
+                                                        <br>
+                                                        <span class="left-span min-icon pl-2">
+                                                            <i class="left-span wi wi-barometer "></i>
+                                                            <h4 class="left-span" id="pressure"></h4>
+
+                                                        </span>
+                                                        <span class="left-span min-icon text-center pl-2">
+                                                            <i class="left-span wi-humidity
+                                                                    wi"></i>
+                                                            <h4 class="left-span" id="humidity"></h4>
+
+                                                        </span>
+                                                        <span class="left-span min-icon pl-2">
+                                                            <i class="fas fa-eye text-white"></i>
+                                                            <h4 class="left-span" id="Visibility"></h4>
+                                                        </span>
+                                                    </center>
+                                                </span>
+
+
+
+                                            </span>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
 
                     </div>
-                    <div class="col-md-6">
-
-                        <span>
-                            <span class="left-span heading-icon text-center">
-                                <i id="iconForCurrent" class=" "></i>
-
-                            </span>
-                            <span class="left-span pl-2">
-                                <h1 id="temp" class="display-3 left-span text-center"></h1>
-                                <i class="big-font left-span wi wi-celsius"></i>
-                                <span class="ml-2 border-left "></span>
-                                <i class=" pl-2 big-font left-span wi
-                                wi-fahrenheit"></i>
-                            </span>
-                            <br>
-
-                            <span>
-                                <center>
 
 
-                                    <span class="left-span min-icon">
-                                        <i id="min_icon" class="left-span wi wi-thermometer-exterior"></i>
-                                        <h4 class="left-span" id="minTemp"></h4>
-                                        <i class="wi wi-celsius"></i>
-                                    </span>
-                                    <span class="left-span min-icon pl-2">
-                                        <i id="max_icon" class="left-span wi-thermometer wi"></i>
-                                        <h4 class="left-span" id="maxTemp"></h4>
-                                        <i class=" wi wi-celsius"></i>
-                                    </span>
-                                    <br>
-                                    <span class="left-span min-icon pl-2">
-                                        <i class="left-span wi wi-barometer "></i>
-                                        <h4 class="left-span" id="pressure"></h4>
-
-                                    </span>
-                                    <span class="left-span min-icon text-center pl-2">
-                                        <i class="left-span wi-humidity
-                                        wi"></i>
-                                        <h4 class="left-span" id="humidity"></h4>
-
-                                    </span>
-                                    <span class="left-span min-icon pl-2">
-                                        <i class="fas fa-eye text-white"></i>
-                                        <h4 class="left-span" id="Visibility"></h4>
-                                    </span>
-                                </center>
-                            </span>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="container-fluid">
 
 
-
-                        </span>
-
-
-
-
-                    </div>
-
-                    <div class="col-md-12">
-                        <div class="container">
-
-
-                            <div class="toolbar bg-transparent">
-                                <ul id="listOfWeather" class="bg-transparent">
+                            <div class="toolbar" id="toolbar">
+                                <ul id="listOfWeather">
 
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <span class="left-span pt-5">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <span class=" pt-5">
                             <span class="left-span">
                                 <i class="pt-5 min-icon wi wi-sunrise"></i>
                                 <h4 class="left-span" id="sunriseTime"></h4>
                             </span>
+                            <span class="left-span">
+                                <div class="box ">
 
-                            <div class="box left-span">
+                                </div>
+                            </span>
 
-                            </div>
                             <span class="left-span pt-3">
                                 <i class="pt-5 min-icon wi wi-sunset"></i>
                                 <h4 class="left-span" id="sunsetTime"></h4>

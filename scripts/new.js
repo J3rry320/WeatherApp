@@ -49,6 +49,19 @@ const searchImage = function (cityName) {
 
 
 }
+const changeListStyle = (width) => {
+    if (width < 768) {
+        $("#toolbar").removeClass("toolbar")
+        $("#toolbar").first().addClass("list-group")
+        $("#listOfWeather").children().addClass("list-group-item")
+    }
+    else{
+        $("#toolbar").addClass("toolbar")
+        $("#toolbar").first().removeClass("list-group")
+        $("#listOfWeather").children().removeClass("list-group-item")
+    }
+}
+
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
@@ -87,7 +100,7 @@ const SearchWeatherForecast = (cityName) => {
         $("#iconForCurrent").addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
-        $("#population").text(result.city.population+" people live here")
+        $("#population").text(result.city.population + " people live here")
         console.log($("#cityName").text())
 
 
@@ -98,16 +111,7 @@ const SearchWeatherForecast = (cityName) => {
         $("#temp").text(unitsForNow.temp);
         $("#pressure").text(unitsForNow.grnd_level + " hPa");
         $("#humidity").text(unitsForNow.humidity + " %");
-        Array.prototype.indexesOf = function (el) {
-            var ret = [];
-            var ix = 0;
-            while (true) {
-                ix = this.indexOf(el, ix);
-                if (ix === -1) break;
-                ret.push(ix);
-            }
-            return ret;
-        };
+
         let showList = []
         for (let i = 2; i < result.list.length; i = i + 8) {
             showList.push(result.list[i])
@@ -117,7 +121,7 @@ const SearchWeatherForecast = (cityName) => {
             let nameOfWeekDay = "Monday";
             let temp_min = element.main.temp_min;
             let temp_max = element.main.temp_max;
-            $("#listOfWeather").append("<li class=pl-3>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>`+"</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + temp_min + "</h6>" + "<h6>" + temp_max + "</h6>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
+            $("#listOfWeather").append("<li class=pl-2>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + temp_min + "</h6>" + "<h6>" + temp_max + "</h6>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
             $(".card_in_li").addClass("card bg-transparent border-left border-right")
             $(".card-subtitle_in_li").addClass("card-subtitle mb-2")
             $(".weather_in_cards").addClass("wi wi-sunrise")
@@ -127,7 +131,11 @@ const SearchWeatherForecast = (cityName) => {
     })
 }
 module.exports = $(document).ready(() => {
+    $(window).resize(()=>{
+        changeListStyle(document.body.clientWidth);
 
+    })
+    changeListStyle(document.body.clientWidth);
 
     searchImage("London");
     SearchWeatherForecast("London");
