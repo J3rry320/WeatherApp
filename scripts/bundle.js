@@ -1468,6 +1468,7 @@ const searchWiki = (cityName) => {
         let propName = Object.keys(result.data.query.pages)
 
         let article = result.data.query.pages[propName].extract
+        console.log(article)
         let regex = /[.]/i
         let lastIndex = article.match(regex).index;
 
@@ -1505,10 +1506,18 @@ const SearchWeather = (cityName) => {
 
 
 
-        let sunrise = result.sys.sunrise;
-        let sunset = result.sys.sunset;
+        let sunrise = new Date(result.sys.sunrise * 1000).toString();
+        let sunset = new Date(result.sys.sunset * 1000).toString();
         let visibility = result.visibility;
-        console.log(sunrise, sunset, visibility)
+        let sunriseTime = sunrise.substring(15, 24)
+        let sunsetTime = sunset.substring(15, 24)
+        $('#sunriseTime').text(sunriseTime + " IST")
+        $('#sunsetTime').text(sunsetTime + " IST")
+        /*
+                let sunriseTime=new Date(sunrise*1000)
+                let sunsetTime=new Date(sunset*1000) Convert To GMT by toUTCSTRING */
+        let regex = /[ ]/g
+        $("#Visibility").text(visibility / 1000 + " km")
     })
 }
 const SearchWeatherForecast = (cityName) => {
@@ -1519,10 +1528,9 @@ const SearchWeatherForecast = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         console.log(result)
         let currentWeather = result.list[0];
-        let time = currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(12);
+        let time = currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(11) + currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(12);
 
-        console.log(time)
-        let iconPrefix = (time > 6 && time < 17) ? "day" : "night";
+        let iconPrefix = (time > 05 && time < 18) ? "day" : "night";
         let iconCode = null
         currentWeather.weather.forEach(element => {
             iconCode = element.id
@@ -1531,6 +1539,7 @@ const SearchWeatherForecast = (cityName) => {
         $("#iconForCurrent").addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
+        console.log($("#cityName").text())
 
 
 
