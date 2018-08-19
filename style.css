@@ -3,6 +3,7 @@
     font-size: 48px
 }
 
+
 body {
     width: 100%;
     height: 100%;
@@ -18,6 +19,9 @@ body {
 
 .toolbar ul li
 {
+
+    overflow-y:scroll;
+    overflow:hidden;
     display: table-cell;
     height: 100px;
     list-style-type: none;

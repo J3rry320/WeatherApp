@@ -60,6 +60,7 @@ const SearchWeatherForecast = (cityName) => {
     let dayTime = 18.00;
     let nightTime = 18.01;
 
+
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         console.log(result)
         let currentWeather = result.list[0];
@@ -67,7 +68,12 @@ const SearchWeatherForecast = (cityName) => {
 
 
         let iconPrefix = (time > 6 && time < 18) ? "day" : "night";
-        console.log(iconPrefix)
+        let iconCode = null
+        currentWeather.weather.forEach(element => {
+            iconCode = element.id
+        })
+
+        $("#iconForCurrent").addClass(`wi-owm-${iconPrefix}-${iconCode}`)
         $(".flag-icon ").addClass(`flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
 
@@ -79,8 +85,8 @@ const SearchWeatherForecast = (cityName) => {
         $("#temp").text(unitsForNow.temp);
         $("#pressure").text(unitsForNow.grnd_level + " hPa");
         $("#humidity").text(unitsForNow.humidity + " %");
-        result.list.forEach(element => {
-
+        result.list.forEach((element,i) => {
+console.log(i)
             $("#listOfWeather").append("<li>" + "<span class=left-span>" + `<i class=wl wl-owm` + "" + "</span>" + "<span class=left-span>" + "<h5 class=temp-row-header>" +
                 element.main.temp + "</h5>" + "</span>" +
                 "<span class=left-span>" + element.main.temp_min + element.main.temp_max + "</span>" + "</li>")
