@@ -1,0 +1,22 @@
+{
+  "name": "weather_app",
+  "version": "1.0.0",
+  "description": "Weather App",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack scripts/app.js dist/build.js"
+  },
+  "author": "J3",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "browserify-fs": "^1.0.0",
+    "images-scraper": "^2.0.11",
+    "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.1.0"
+  }
+}

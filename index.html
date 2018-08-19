@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.9/css/weather-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css">
+    <title>Weather App</title>
+</head>
+
+<body>
+    <section class="intro">
+
+
+        <!--Weather Search Bar-->
+        <div class="bg-city"></div>
+        <div class="intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group mb-5">
+                            <input type="text" id="cityValue" class="form-control" placeholder="Enter The Name Of The City" aria-label="Enter The Name Of The City"
+                                aria-describedby="searchButton">
+                            <div class="input-group-append">
+                                <button class="btn btn-success" type="button" id="searchButton">Button</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 ">
+
+                        <span>
+                            <span>
+                                <h1 id="cityName" class="text-center display-4 left-span">
+
+                                </h1>
+                            </span>
+                            <span class="ml-3 flag-icon right-span"></span>
+                        </span>
+                        <br>
+                        <p id="article"></p>
+
+                    </div>
+                    <div class="col-md-6">
+
+                        <span>
+                            <span class="left-span">
+                                <i id="iconForCurrent" class="wi wi-owm-night-800 heading-icon text-center"></i>
+
+                            </span>
+                            <span class="left-span pl-2">
+                                <h1 id="temp" class="display-3 left-span text-center"></h1>
+                                <i class="big-font left-span wi wi-celsius"></i>
+                                <span class="ml-2 border-left "></span>
+                                <i class=" pl-2 big-font left-span wi
+                                wi-fahrenheit"></i>
+                            </span>
+                            <br>
+
+                            <span>
+                                <span class="left-span min-icon">
+                                    <i class="left-span wi wi-thermometer-exterior"></i>
+                                    <h4 class="left-span" id="minTemp"></h4>
+                                    <i class="wi wi-celsius"></i>
+                                </span>
+                                <span class="left-span min-icon pl-2">
+                                    <i class="left-span wi-thermometer wi"></i>
+                                    <h4 class="left-span" id="maxTemp"></h4>
+                                    <i class=" wi wi-celsius"></i>
+                                </span>
+
+                                <span class="left-span min-icon pl-2">
+                                    <i class="left-span wi wi-barometer "></i>
+                                    <h4 class="left-span" id="pressure"></h4>
+
+                                </span>
+                                <span class="left-span min-icon text-center pl-2">
+                                    <i class="left-span wi-humidity
+                                        wi"></i>
+                                    <h4 class="left-span" id="humidity"></h4>
+
+                                </span>
+                            </span>
+
+
+
+                        </span>
+
+
+
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="toolbar">
+                            <ul id="listOfWeather">
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!--Cards Describing City col-6-->
+    <!--Cards Describing Weather col-6-->
+    <!--Describing Weather For Next Days-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src="./scripts/bundle.js"></script>
+</body>
+
+</html>
