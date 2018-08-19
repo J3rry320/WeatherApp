@@ -1504,8 +1504,11 @@ const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
 
-        console.log(result.sys)
 
+        let sunrise = result.sys.sunrise;
+        let sunset = result.sys.sunset;
+        let visibility = result.visibility;
+        console.log(sunrise, sunset, visibility)
     })
 }
 const SearchWeatherForecast = (cityName) => {
@@ -1518,15 +1521,15 @@ const SearchWeatherForecast = (cityName) => {
         let currentWeather = result.list[0];
         let time = currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(12);
 
-
-        let iconPrefix = (time > 6 && time < 18) ? "day" : "night";
+        console.log(time)
+        let iconPrefix = (time > 6 && time < 17) ? "day" : "night";
         let iconCode = null
         currentWeather.weather.forEach(element => {
             iconCode = element.id
         })
 
-        $("#iconForCurrent").addClass(`wi-owm-${iconPrefix}-${iconCode}`)
-        $(".flag-icon ").addClass(`flag-icon-${result.city.country}`.toLowerCase());
+        $("#iconForCurrent").addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
+        $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
 
 
@@ -1537,11 +1540,12 @@ const SearchWeatherForecast = (cityName) => {
         $("#temp").text(unitsForNow.temp);
         $("#pressure").text(unitsForNow.grnd_level + " hPa");
         $("#humidity").text(unitsForNow.humidity + " %");
-        result.list.forEach((element,i) => {
-console.log(i)
-            $("#listOfWeather").append("<li>" + "<span class=left-span>" + `<i class=wl wl-owm` + "" + "</span>" + "<span class=left-span>" + "<h5 class=temp-row-header>" +
-                element.main.temp + "</h5>" + "</span>" +
-                "<span class=left-span>" + element.main.temp_min + element.main.temp_max + "</span>" + "</li>")
+
+        result.list.forEach((element, i) => {
+
+            /*    $("#listOfWeather").append("<li>" + "<span class=left-span>" + `<i class=wl wl-owm` + "" + "</span>" + "<span class=left-span>" + "<h5 class=temp-row-header>" +
+                    element.main.temp + "</h5>" + "</span>" +
+                    "<span class=left-span>" + element.main.temp_min + element.main.temp_max + "</span>" + "</li>")*/
         })
     })
 }
@@ -1550,10 +1554,14 @@ module.exports = $(document).ready(() => {
 
     searchImage("London");
     SearchWeatherForecast("London");
+    SearchWeather("London")
     searchWiki("London");
 
 
     $("#searchButton").bind("click", () => {
+
+        $("#iconForCurrent").removeClass()
+        $("#flagIcon ").removeClass();
         searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
