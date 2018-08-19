@@ -41,12 +41,18 @@
 
                                 </h1>
                             </span>
-                            <span class="ml-3  right-span">
+                            <span class="ml-3  left-span">
                                 <span id="flagIcon" class=""></span>
                             </span>
 
                         </span>
                         <br>
+                        <span class="left-span">
+
+                            <i class="left-span min-icon fas fa-users"></i>
+                            <h4 class="left-span pt-1" id="population"></h4>
+                        </span>
+
                         <p id="article"></p>
 
                     </div>
@@ -67,33 +73,36 @@
                             <br>
 
                             <span>
-                                <span class="left-span min-icon">
-                                    <i class="left-span wi wi-thermometer-exterior"></i>
-                                    <h4 class="left-span" id="minTemp"></h4>
-                                    <i class="wi wi-celsius"></i>
-                                </span>
-                                <span class="left-span min-icon pl-2">
-                                    <i class="left-span wi-thermometer wi"></i>
-                                    <h4 class="left-span" id="maxTemp"></h4>
-                                    <i class=" wi wi-celsius"></i>
-                                </span>
+                                <center>
 
-                                <span class="left-span min-icon pl-2">
-                                    <i class="left-span wi wi-barometer "></i>
-                                    <h4 class="left-span" id="pressure"></h4>
 
-                                </span>
-                                <span class="left-span min-icon text-center pl-2">
-                                    <i class="left-span wi-humidity
+                                    <span class="left-span min-icon">
+                                        <i id="min_icon" class="left-span wi wi-thermometer-exterior"></i>
+                                        <h4 class="left-span" id="minTemp"></h4>
+                                        <i class="wi wi-celsius"></i>
+                                    </span>
+                                    <span class="left-span min-icon pl-2">
+                                        <i id="max_icon" class="left-span wi-thermometer wi"></i>
+                                        <h4 class="left-span" id="maxTemp"></h4>
+                                        <i class=" wi wi-celsius"></i>
+                                    </span>
+                                    <br>
+                                    <span class="left-span min-icon pl-2">
+                                        <i class="left-span wi wi-barometer "></i>
+                                        <h4 class="left-span" id="pressure"></h4>
+
+                                    </span>
+                                    <span class="left-span min-icon text-center pl-2">
+                                        <i class="left-span wi-humidity
                                         wi"></i>
-                                    <h4 class="left-span" id="humidity"></h4>
+                                        <h4 class="left-span" id="humidity"></h4>
 
-                                </span>
-                                <span class="left-span min-icon pl-2">
-                                    <i class="fas fa-eye text-white"></i>
-                                    <h4 class="left-span" id="Visibility"></h4>
-                                </span>
-
+                                    </span>
+                                    <span class="left-span min-icon pl-2">
+                                        <i class="fas fa-eye text-white"></i>
+                                        <h4 class="left-span" id="Visibility"></h4>
+                                    </span>
+                                </center>
                             </span>
 
 
@@ -104,8 +113,20 @@
 
 
                     </div>
+
                     <div class="col-md-12">
-                        <span class="left-span pt-3">
+                        <div class="container">
+
+
+                            <div class="toolbar bg-transparent">
+                                <ul id="listOfWeather" class="bg-transparent">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <span class="left-span pt-5">
                             <span class="left-span">
                                 <i class="pt-5 min-icon wi wi-sunrise"></i>
                                 <h4 class="left-span" id="sunriseTime"></h4>
@@ -114,20 +135,13 @@
                             <div class="box left-span">
 
                             </div>
-                            <span class="left-span">
+                            <span class="left-span pt-3">
                                 <i class="pt-5 min-icon wi wi-sunset"></i>
                                 <h4 class="left-span" id="sunsetTime"></h4>
                             </span>
 
                         </span>
 
-                    </div>
-                    <div class="col-md-12">
-                        <div class="toolbar">
-                            <ul id="listOfWeather">
-
-                            </ul>
-                        </div>
                     </div>
                 </div>
             </div>
