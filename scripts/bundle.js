@@ -1451,6 +1451,7 @@ const Weather=require("./new")
 
 },{"./new":28}],28:[function(require,module,exports){
 const axios = require('axios');
+//Farhenit Converter
 const converter = (id, value) => {
     switch (id) {
         case "toCelsius":
@@ -1465,6 +1466,7 @@ const converter = (id, value) => {
     }
     return value
 }
+//Wikipedia Search
 const searchWiki = (cityName) => {
     axios.get("https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*", {
 
@@ -1492,11 +1494,13 @@ const searchWiki = (cityName) => {
         console.log(error)
     })
 }
+//Population
 const definePopulation = (population) => {
     let newPopulation = population / 1000
 
     $("#population").text(newPopulation + "k people live here")
 }
+//Google Search Image
 const searchImage = function (cityName) {
     axios.get("https://www.googleapis.com/customsearch/v1?", {
         params: {
@@ -1521,6 +1525,7 @@ const searchImage = function (cityName) {
 
 
 }
+//Width Change Add ResponsiveNess
 const changeListStyle = (width) => {
     if (width < 768) {
         $("#toolbar").removeClass("toolbar")
@@ -1532,6 +1537,7 @@ const changeListStyle = (width) => {
         $("#listOfWeather").children().removeClass("list-group-item")
     }
 }
+//Update Weather Icons
 const updateIcon = (time, iconCode, target, ifDateText) => {
     let numberToSearchFor = ifDateText ? 11 : 16;
 
@@ -1541,7 +1547,7 @@ const updateIcon = (time, iconCode, target, ifDateText) => {
     $(target).addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
 
 }
-
+//Add Suffix To the Returned day
 const addSuffixToDay = (dateText) => {
     switch (dateText) {
         case "Mon":
@@ -1565,11 +1571,13 @@ const addSuffixToDay = (dateText) => {
     return dateText
 
 }
+//set ID for dynamically generated or appended divs
 const setAttributeId = (selector, variable) => {
     $(selector).attr("id", function (i) {
         return variable + i
     })
 }
+//SearchWeather For The Day
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
@@ -1586,9 +1594,11 @@ const SearchWeather = (cityName) => {
                 let sunriseTime=new Date(sunrise*1000)
                 let sunsetTime=new Date(sunset*1000) Convert To GMT by toUTCSTRING */
 
-        $("#Visibility").text(visibility / 1000 + " km")
+        $("#Visibility").text(visibility / 1000 + " km");
+        $("#VisibilityInModal").text(visibility / 1000 + " km");
     })
 }
+//Search Weather Forecast Hourly
 const SearchWeatherForecast = (cityName) => {
 
 
@@ -1611,16 +1621,9 @@ const SearchWeatherForecast = (cityName) => {
         let currentDate = new Date(currentWeather.dt * 1000)
         console.log(currentDate)
 
-
-
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
         definePopulation(result.city.population)
-
-
-
-
-
         let unitsForNow = currentWeather.main;
         $("#minTemp").text(unitsForNow.temp_min);
         $("#maxTemp").text(unitsForNow.temp_max);
@@ -1634,7 +1637,7 @@ const SearchWeatherForecast = (cityName) => {
         }
 
         showList.forEach((element, i) => {
-
+            $(` #icon${i}`).removeClass()
 
             let temp = element.main.temp;
             let dateText = new Date(element.dt * 1000).toString()
@@ -1663,19 +1666,24 @@ const SearchWeatherForecast = (cityName) => {
         let modalChecker = false;
         let modalPermannentTemp = null;
         $(".btn_in_cards").click((e) => {
+            $("#iconForCurrentModal").removeClass()
             let currentList = showList[e.target.id.charAt(e.target.id.length - 1)]
             console.log(currentList)
             let dateText = new Date(currentList.dt * 1000).toString()
+            console.log(dateText)
+            let icon = null
             currentList.weather.forEach(element => {
-                updateIcon(dateText, element.id, "#iconForCurrentModal", false)
+                icon = element.id
+                $("#DescriptionInModal").text(element.description.toUpperCase());
             })
-
+            updateIcon(dateText, icon, "#iconForCurrentModal", false)
 
             $("#minTempInModal").text(currentList.main.temp_min);
             $("#maxTempInModal").text(currentList.main.temp_max);
             $("#tempInModal").text(currentList.main.temp);
-            $("#pressureIModal").text(currentList.main.grnd_level + " hPa");
+            $("#pressureInModal").text(currentList.main.grnd_level + " hPa");
             $("#humidityInModal").text(currentList.main.humidity + " %");
+
             $(".modal-title").text(`Weather For ${addSuffixToDay(dateText.substring(0,3))}`)
             $('#weatherModal').modal('toggle');
             modalChecker = $('#weatherModal').hasClass('show')
