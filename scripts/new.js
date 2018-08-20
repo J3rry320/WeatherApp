@@ -208,12 +208,14 @@ const SearchWeatherForecast = (cityName) => {
 
 
         })
+        let modalChecker = false;
+        let modalPermannentTemp = null;
         $(".btn_in_cards").click((e) => {
             let currentList = showList[e.target.id.charAt(e.target.id.length - 1)]
             console.log(currentList)
-            let dateText=new Date(currentList.dt*1000).toString()
-            currentList.weather.forEach(element=>{
-                updateIcon(dateText,element.id,"#iconForCurrentModal",false)
+            let dateText = new Date(currentList.dt * 1000).toString()
+            currentList.weather.forEach(element => {
+                updateIcon(dateText, element.id, "#iconForCurrentModal", false)
             })
 
 
@@ -224,20 +226,32 @@ const SearchWeatherForecast = (cityName) => {
             $("#humidityInModal").text(currentList.main.humidity + " %");
             $(".modal-title").text(`Weather For ${addSuffixToDay(dateText.substring(0,3))}`)
             $('#weatherModal').modal('toggle');
-
+            modalChecker = $('#weatherModal').hasClass('show')
+            modalPermannentTemp = $("#tempInModal").text();
         })
-        var permannentTemp = $("#temp").text();
+
+        let permannentTemp = $("#temp").text();
+
 
         $(".toFahrenheit").bind("click", (e) => {
+
+
+            let varToPass = modalChecker ? modalPermannentTemp : permannentTemp;
+            let selector = modalChecker ? "#tempInModal" : "#temp";
             e.preventDefault();
 
 
-            $("#temp").text(converter("toFahrenheit", permannentTemp))
+            $(selector).text(converter("toFahrenheit", varToPass));
         })
         $(".toCelsius").bind("click", (e) => {
+
+
+            let varToPass = modalChecker ? modalPermannentTemp : permannentTemp;
+            let selector = modalChecker ? "#tempInModal" : "#temp";
+
             e.preventDefault();
 
-            $("#temp").text(permannentTemp)
+            $(selector).text(varToPass)
         })
     })
 }
