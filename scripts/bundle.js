@@ -1478,6 +1478,10 @@ const searchWiki = (cityName) => {
         console.log(error)
     })
 }
+const definePopulation=(population)=>{
+    let newPopulation=population/1000
+    console.log(newPopulation)
+}
 const searchImage = function (cityName) {
     axios.get("https://www.googleapis.com/customsearch/v1?", {
         params: {
@@ -1487,6 +1491,7 @@ const searchImage = function (cityName) {
             key: "AIzaSyDICqZ-UdNtD4n5LKjdgYwwfWJi0mFVQG0"
         }
     }).then((result) => {
+
         let items = result.data.items;
 
         items.length -= 9;
@@ -1512,13 +1517,16 @@ const changeListStyle = (width) => {
         $("#listOfWeather").children().removeClass("list-group-item")
     }
 }
-const updateIcon = (time, iconCode, target,ifDateText) => {
-    let timeNow = time.replace(/[- :]/g, " ").charAt(16) + time.replace(/[- :]/g, " ").charAt(17);
+const updateIcon = (time, iconCode, target, ifDateText) => {
+    let numberToSearchFor = ifDateText ? 11 : 16;
+    console.log(numberToSearchFor, numberToSearchFor + 1)
+    let timeNow = time.replace(/[- :]/g, " ").charAt(numberToSearchFor) + time.replace(/[- :]/g, " ").charAt(numberToSearchFor + 1);
 
     let iconPrefix = (timeNow > 05 && timeNow < 18) ? "day" : "night";
     $(target).addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
 
 }
+
 const addSuffixToDay = (dateText) => {
     switch (dateText) {
         case "Mon":
@@ -1569,17 +1577,24 @@ const SearchWeatherForecast = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         console.log(result)
         let currentWeather = result.list[0];
-        let time = currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(11) + currentWeather.dt_txt.replace(/[- :]/g, " ").charAt(12);
 
-        let iconPrefix = (time > 05 && time < 18) ? "day" : "night";
-        let iconCode = null
+        let iconCode = null;
+        let message=null;
+        let mainMessage=null;
+
         currentWeather.weather.forEach(element => {
-            iconCode = element.id
+            iconCode = element.id;
+            message=  element.description;
+            mainMessage=element.message;
         })
+        $("#Description").text(message.toUpperCase());
 
-        $("#iconForCurrent").addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
+        updateIcon(currentWeather.dt_txt, iconCode, "#iconForCurrent", true)
+
+
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
+        definePopulation(result.city.population)
         $("#population").text(result.city.population + " people live here")
         console.log($("#cityName").text())
 
@@ -1593,12 +1608,12 @@ const SearchWeatherForecast = (cityName) => {
         $("#humidity").text(unitsForNow.humidity + " %");
 
         let showList = []
-        for (let i = 2; i < result.list.length; i = i + 8) {
+        for (let i = 2; i < result.list.length; i = i + 7) {
             showList.push(result.list[i])
         }
 
-        showList.forEach(element => {
-
+        showList.forEach((element, i) => {
+            let index = 0;
 
             let temp = element.main.temp;
             let dateText = new Date(element.dt * 1000).toString()
@@ -1610,16 +1625,22 @@ const SearchWeatherForecast = (cityName) => {
             element.weather.forEach(id => {
                 iconCode = id.id
             })
-            console.log(iconCode)
-            let icon = updateIcon(dateText, iconCode, ".weather_in_cards")
 
-            $("#listOfWeather").append("<li class=pl-4>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + time + "</h6>" + "<h6>" + temp + "</h6>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
+
+
+            $("#listOfWeather").append("<li>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + time + "</h6>" +"<br>"+ "<h6 class=left-span>" + temp + "</h6>" + "<i class=cel>" +"</i>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
             $(".card_in_li").addClass("card bg-transparent border-left border-right")
             $(".card-subtitle_in_li").addClass("card-subtitle mb-2")
-
+            $(".cel").addClass(" pl-1  wi wi-celsius")
+            $('#listOfWeather li .weather_in_cards').attr('id', function (i) {
+                return 'icon' + (i);
+            });
+            updateIcon(dateText, iconCode, `#icon${i}`, false)
             $(".btn_in_cards").addClass("btn btn-sm btn-dark")
 
+
         })
+
     })
 }
 module.exports = $(document).ready(() => {
@@ -1629,17 +1650,18 @@ module.exports = $(document).ready(() => {
     })
     changeListStyle(document.body.clientWidth);
 
-    searchImage("London");
+   // searchImage("London");
     SearchWeatherForecast("London");
     SearchWeather("London")
     searchWiki("London");
 
 
     $("#searchButton").bind("click", () => {
+        $("#listOfWeather").empty()
 
         $("#iconForCurrent").removeClass()
         $("#flagIcon ").removeClass();
-        searchImage($("#cityValue").val());
+      //  searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
         SearchWeatherForecast($("#cityValue").val())
