@@ -1634,7 +1634,7 @@ const SearchWeatherForecast = (cityName) => {
         }
 
         showList.forEach((element, i) => {
-            let index = 0;
+
 
             let temp = element.main.temp;
             let dateText = new Date(element.dt * 1000).toString()
@@ -1646,8 +1646,6 @@ const SearchWeatherForecast = (cityName) => {
             element.weather.forEach(id => {
                 iconCode = id.id
             })
-
-
 
             $("#listOfWeather").append("<li>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + time + "</h6>" + "<br>" + "<h6 class=left-span>" + temp + "</h6>" + "<i class=cel>" + "</i>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
             $(".card_in_li").addClass("card bg-transparent border-left border-right")
@@ -1664,17 +1662,31 @@ const SearchWeatherForecast = (cityName) => {
         })
         $(".btn_in_cards").click((e) => {
             let currentList = showList[e.target.id.charAt(e.target.id.length - 1)]
-            //Add Modal Later After Masturbating
+            console.log(currentList)
+            let dateText=new Date(currentList.dt*1000).toString()
+            currentList.weather.forEach(element=>{
+                updateIcon(dateText,element.id,"#iconForCurrentModal",false)
+            })
+
+
+            $("#minTempInModal").text(currentList.main.temp_min);
+            $("#maxTempInModal").text(currentList.main.temp_max);
+            $("#tempInModal").text(currentList.main.temp);
+            $("#pressureIModal").text(currentList.main.grnd_level + " hPa");
+            $("#humidityInModal").text(currentList.main.humidity + " %");
+            $(".modal-title").text(`Weather For ${addSuffixToDay(dateText.substring(0,3))}`)
+            $('#weatherModal').modal('toggle');
+
         })
         var permannentTemp = $("#temp").text();
-        console.log(permannentTemp)
-        $("#toFahrenheit").bind("click", (e) => {
+
+        $(".toFahrenheit").bind("click", (e) => {
             e.preventDefault();
 
 
             $("#temp").text(converter("toFahrenheit", permannentTemp))
         })
-        $("#toCelsius").bind("click", (e) => {
+        $(".toCelsius").bind("click", (e) => {
             e.preventDefault();
 
             $("#temp").text(permannentTemp)
@@ -1698,7 +1710,6 @@ module.exports = $(document).ready(() => {
     $("#searchButton").bind("click", () => {
         $("#minTemp,#maxTemp,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
         $("#listOfWeather").empty()
-
         $("#iconForCurrent").removeClass()
         $("#flagIcon ").removeClass();
         //  searchImage($("#cityValue").val());
@@ -1706,13 +1717,7 @@ module.exports = $(document).ready(() => {
         searchWiki($("#cityValue").val())
         SearchWeatherForecast($("#cityValue").val())
 
-
     })
-
-
-
-
-
 
 })
 },{"axios":1}],29:[function(require,module,exports){
