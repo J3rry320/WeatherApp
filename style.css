@@ -84,6 +84,17 @@ body {
     vertical-align: middle;
 }
 @media only screen and (max-width:468px) {
+    .card-title {
+        color: #fff;
+        font-family: 'Fredoka One', cursive;
+        font-size: 18px;
+    }
+    .flag-icon {
+        font-size: 24px;
+    }
+    .min-icon {
+        font-size: 20px
+    }
     .box {
         width: 300px;
         height: 100px;
