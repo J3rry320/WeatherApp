@@ -1,4 +1,18 @@
 const axios = require('axios');
+const converter = (id, value) => {
+    switch (id) {
+        case "toCelsius":
+            value = ((value - 32) * 5 / 9).toFixed(2)
+            break
+
+        case "toFahrenheit":
+            value = ((value * 9 / 5) + 32).toFixed(2)
+            break
+
+
+    }
+    return value
+}
 const searchWiki = (cityName) => {
     axios.get("https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*", {
 
@@ -26,9 +40,10 @@ const searchWiki = (cityName) => {
         console.log(error)
     })
 }
-const definePopulation=(population)=>{
-    let newPopulation=population/1000
-    console.log(newPopulation)
+const definePopulation = (population) => {
+    let newPopulation = population / 1000
+
+    $("#population").text(newPopulation + "k people live here")
 }
 const searchImage = function (cityName) {
     axios.get("https://www.googleapis.com/customsearch/v1?", {
@@ -67,7 +82,7 @@ const changeListStyle = (width) => {
 }
 const updateIcon = (time, iconCode, target, ifDateText) => {
     let numberToSearchFor = ifDateText ? 11 : 16;
-    console.log(numberToSearchFor, numberToSearchFor + 1)
+
     let timeNow = time.replace(/[- :]/g, " ").charAt(numberToSearchFor) + time.replace(/[- :]/g, " ").charAt(numberToSearchFor + 1);
 
     let iconPrefix = (timeNow > 05 && timeNow < 18) ? "day" : "night";
@@ -98,6 +113,11 @@ const addSuffixToDay = (dateText) => {
     return dateText
 
 }
+const setAttributeId = (selector, variable) => {
+    $(selector).attr("id", function (i) {
+        return variable + i
+    })
+}
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
@@ -118,33 +138,34 @@ const SearchWeather = (cityName) => {
     })
 }
 const SearchWeatherForecast = (cityName) => {
-    let dayTime = 18.00;
-    let nightTime = 18.01;
+
 
 
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         console.log(result)
         let currentWeather = result.list[0];
 
-        let iconCode = null;
-        let message=null;
-        let mainMessage=null;
+
+
+        let mainMessage = null;
 
         currentWeather.weather.forEach(element => {
-            iconCode = element.id;
-            message=  element.description;
-            mainMessage=element.message;
-        })
-        $("#Description").text(message.toUpperCase());
 
-        updateIcon(currentWeather.dt_txt, iconCode, "#iconForCurrent", true)
+            updateIcon(currentWeather.dt_txt, element.id, "#iconForCurrent", true)
+            $("#Description").text(element.description.toUpperCase());
+            mainMessage = element.message;
+        })
+
+        let currentDate = new Date(currentWeather.dt * 1000)
+        console.log(currentDate)
+
 
 
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
         definePopulation(result.city.population)
-        $("#population").text(result.city.population + " people live here")
-        console.log($("#cityName").text())
+
+
 
 
 
@@ -176,45 +197,68 @@ const SearchWeatherForecast = (cityName) => {
 
 
 
-            $("#listOfWeather").append("<li>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + time + "</h6>" +"<br>"+ "<h6 class=left-span>" + temp + "</h6>" + "<i class=cel>" +"</i>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
+            $("#listOfWeather").append("<li>" + "<div class=card_in_li >" + "<div class=card-body>" + "<h5 class=card-title>" + nameOfWeekDay + "</h5>" + "<h6 class=card-subtitle_in_li >" + `<i class=weather_in_cards>` + "</i>" + "</h6>" + "<h6 class=card-text>" + "<span class=left-span>" + "<h6>" + time + "</h6>" + "<br>" + "<h6 class=left-span>" + temp + "</h6>" + "<i class=cel>" + "</i>" + "</span>" + "</h6>" + "<a class=btn_in_cards >" + "Learn More" + "</a>" + "</div>" + "</div>" + "</li>")
             $(".card_in_li").addClass("card bg-transparent border-left border-right")
             $(".card-subtitle_in_li").addClass("card-subtitle mb-2")
             $(".cel").addClass(" pl-1  wi wi-celsius")
-            $('#listOfWeather li .weather_in_cards').attr('id', function (i) {
-                return 'icon' + (i);
-            });
-            updateIcon(dateText, iconCode, `#icon${i}`, false)
             $(".btn_in_cards").addClass("btn btn-sm btn-dark")
+            setAttributeId('#listOfWeather li .weather_in_cards', "icon")
+
+            updateIcon(dateText, iconCode, `#icon${i}`, false)
+            setAttributeId("#listOfWeather li .btn_in_cards", "button")
+
 
 
         })
+        $(".btn_in_cards").click((e) => {
+            let currentList = showList[e.target.id.charAt(e.target.id.length - 1)]
+            //Add Modal Later After Masturbating
+        })
+        var permannentTemp = $("#temp").text();
+        console.log(permannentTemp)
+        $("#toFahrenheit").bind("click", (e) => {
+            e.preventDefault();
 
+
+            $("#temp").text(converter("toFahrenheit", permannentTemp))
+        })
+        $("#toCelsius").bind("click", (e) => {
+            e.preventDefault();
+
+            $("#temp").text(permannentTemp)
+        })
     })
 }
+
 module.exports = $(document).ready(() => {
+
     $(window).resize(() => {
         changeListStyle(document.body.clientWidth);
 
     })
     changeListStyle(document.body.clientWidth);
 
-   // searchImage("London");
+    // searchImage("London");
     SearchWeatherForecast("London");
     SearchWeather("London")
     searchWiki("London");
 
-
     $("#searchButton").bind("click", () => {
+        $("#minTemp,#maxTemp,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
         $("#listOfWeather").empty()
 
         $("#iconForCurrent").removeClass()
         $("#flagIcon ").removeClass();
-      //  searchImage($("#cityValue").val());
+        //  searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
         SearchWeatherForecast($("#cityValue").val())
 
+
     })
+
+
+
 
 
 
