@@ -15,7 +15,7 @@ const DescribeWind = (speed, deg, target) => {
     windSpeedIcon = "wi wi-windy"
     if (speed >= 0.3 && speed <= 1.5) {
         describeSpeed = "Light Air";
-        windSpeedIcon = "wi wi-windy"
+        windSpeedIcon = "wi wi-windy "
     }
     if (speed >= 1.6 && speed <= 3.3) {
         describeSpeed = "Light breeze";
@@ -83,15 +83,18 @@ const DescribeWind = (speed, deg, target) => {
 
     $(target[0]).text(speed + "m/s " + describeSpeed)
     $(target[1]).text(deg + "deg " + windangle)
-    $(target[2]).addClass(iconConstructor)
-    $(target[3]).addClass(windSpeedIcon)
+    $(target[2]).addClass(iconConstructor + "left-span min-icon text-white")
+    $(target[3]).addClass(windSpeedIcon + "left-span min-icon text-white")
 
+}
+const checkTime = (time, minVal, maxVal) => {
+    return (time > minVal && time < maxVal) ? "day" : "night"
 }
 //Same as winddescription
 const CloudChecker = (time, percent) => {
 
 
-    let checker = (time > 5 && time < 18) ? "day" : "night";
+    let checker = checkTime(parseInt(time), 5, 18)
 
 
     let ValueToBeReturnedWhileChecking = null
@@ -99,9 +102,9 @@ const CloudChecker = (time, percent) => {
     else if (checker === "night") ValueToBeReturnedWhileChecking = false
 
     if (percent >= 0 && percent <= 100) {
-        if (percent >= 0 && percent <= 10) return ValueToBeReturnedWhileChecking ? "Sunny" : "Clear"
-        if (percent > 10 && percent <= 20) return ValueToBeReturnedWhileChecking ? "Partly Sunny" : "Fair"
-        if (percent > 20 && percent <= 30) return ValueToBeReturnedWhileChecking ? "Mostly Sunny" : "Mostly Fair"
+        if (percent >= 0 && percent <= 10) return ValueToBeReturnedWhileChecking ? "Sunny" : "Clear Sky"
+        if (percent > 10 && percent <= 20) return ValueToBeReturnedWhileChecking ? "Partly Sunny" : "Fair Sky"
+        if (percent > 20 && percent <= 30) return ValueToBeReturnedWhileChecking ? "Mostly Sunny" : "Mostly Fair Sky"
         if (percent > 30 && percent <= 50) return "Partly Cloudy"
         if (percent > 50 && percent < 75) return "Mostly Cloudy"
         if (percent >= 75 && percent <= 100) return "Cloudy"
@@ -186,6 +189,7 @@ const searchImage = function (cityName) {
 
 
 }
+
 //Width Change Add ResponsiveNess reuired in app
 const changeListStyle = (width) => {
     if (width < 768) {
@@ -203,10 +207,10 @@ const updateIcon = (time, iconCode, target, ifDateText) => {
     let numberToSearchFor = ifDateText ? 11 : 16;
 
     let timeNow = time.replace(/[- :]/g, " ").charAt(numberToSearchFor) + time.replace(/[- :]/g, " ").charAt(numberToSearchFor + 1);
-    timeNow = parseInt(timeNow)
-    let iconPrefix = (timeNow > 5 && timeNow < 18) ? "day" : "night";
+    timeNow = parseInt(timeNow);
+    let iconPrefix = checkTime(timeNow, 5, 18);
 
-    $(target).addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
+    $(target).addClass(`wi wi-owm-${iconPrefix}-${iconCode}`);
 
 
 }
@@ -300,7 +304,7 @@ const searchNews = (query, queryType, date) => {
             console.warn(error)
         })
 }
-//SearchWeather For The Day
+//SearchWeather For The Current Hour
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         let country = result.sys.country.toLowerCase()
@@ -351,6 +355,7 @@ const SearchWeatherForecast = (cityName) => {
 
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
+console.log(result)
         let currentWeather = result.list[0];
 
 
@@ -364,8 +369,8 @@ const SearchWeatherForecast = (cityName) => {
             mainMessage = element.message;
         })
 
-        let currentDate = new Date(currentWeather.dt * 1000)
-        console.log(currentDate)
+        let currentDate = new Date(currentWeather.dt * 1000).toString();
+
 
         $("#flagIcon ").addClass(`flag-icon flag-icon-${result.city.country}`.toLowerCase());
         $("#cityName").text(result.city.name);
@@ -376,13 +381,11 @@ const SearchWeatherForecast = (cityName) => {
         $("#temp").text(unitsForNow.temp);
         $("#pressure").text(unitsForNow.grnd_level + " hPa");
         $("#humidity").text(unitsForNow.humidity + " %");
+        DescribeWind(currentWeather.wind.speed, currentWeather.wind.deg, ["#WindValue", "#WindDesc", "#windDegIcon", "#windSpeedIcon"])
+        $("#CloudDesc").text(CloudChecker(currentDate.substring(16, 18), currentWeather.clouds.all))
 
-        let showList = []
-        for (let i = 2; i < result.list.length; i = i + 7) {
-            showList.push(result.list[i])
-        }
-
-        showList.forEach((element, i) => {
+        //List of weather
+       result.list.forEach((element, i) => {
             $(` #icon${i}`).removeClass()
 
             let temp = element.main.temp;
@@ -479,7 +482,15 @@ module.exports = $(document).ready(() => {
         let value = ($("#cityValue").val().length === 0) ? "London" : $("#cityValue").val()
         SearchWeatherForecast(value)
     })
+    $("#dailyForecast").bind("click", () => {
+        $("#dailyForecast").addClass("d-none")
+        $("#hourlyForecast").removeClass("d-none")
 
+        $("#temp,#minTemp,#NewsApi,#maxTemp,#listOfWeather,#Visibility,#CloudDesc,#CloudyPercent,#WindValue,#WindDesc,#cityName,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
+        $("#windSpeedIcon,#windDegIcon,#iconForCurrent,#flagIcon,#NewsApi ").removeClass()
+        let value = ($("#cityValue").val().length === 0) ? "London" : $("#cityValue").val()
+        SearchWeather(value)
+    })
 
     // searchImage("London");
     //SearchWeatherForecast("London");
