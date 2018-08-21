@@ -1452,24 +1452,93 @@ const Weather=require("./new")
 },{"./new":28}],28:[function(require,module,exports){
 "use strict"
 const axios = require('axios');
+
+
+//Describe Wind REquored in searchWEather and searchWEatherFOreCast
 const DescribeWind = (speed, deg, target) => {
+
     let describeSpeed = "";
     let windangle = "";
-    if (speed < 0.3) describeSpeed = "calm"
-    if (speed >= 0.3 && speed <= 1.5) describeSpeed = "Light Air"
-    if (speed >= 1.6 && speed <= 3.3) describeSpeed = "Light breeze"
-    if (speed >= 3.4 && speed < 5.5) describeSpeed = "Gentle Breeze"
-    if (speed >= 5.5 && speed <= 7.9) describeSpeed = "Moderate Breeze"
-    if (speed >= 8 && speed <= 10.7) describeSpeed = "Fresh Breeze"
-    if (speed >= 10.8 && speed <= 13.8) describeSpeed = "Strong Breeze"
-    if (speed >= 13.9 && speed <= 17.1) describeSpeed = "Moderate Gale"
-    if (speed >= 17.2 && speed <= 20.7) describeSpeed = "Gale"
-    if (speed >= 20.8 && speed <= 24.4) describeSpeed = "Strong Gale"
-    if (speed >= 24.5 && speed <= 28.4) describeSpeed = "Storm"
-    if (speed >= 28.5 && speed <= 32.6) describeSpeed = "Violent Storm"
-    if (speed >= 32.7) describeSpeed = "Hurricane"
-    return describeSpeed
+    let iconConstructor = `wi wi-wind towards-${Math.round(deg)}-deg`
+    let windSpeedIcon = ""
+    //Speed Description
+    if (speed < 0.3) describeSpeed = "calm";
+    windSpeedIcon = "wi wi-windy"
+    if (speed >= 0.3 && speed <= 1.5) {
+        describeSpeed = "Light Air";
+        windSpeedIcon = "wi wi-windy"
+    }
+    if (speed >= 1.6 && speed <= 3.3) {
+        describeSpeed = "Light breeze";
+        windSpeedIcon = "wi wi-windy"
+    }
+    if (speed >= 3.4 && speed < 5.5) {
+        describeSpeed = "Gentle Breeze";
+        windSpeedIcon = "wi wi-windy"
+    }
+    if (speed >= 5.5 && speed <= 7.9) {
+        describeSpeed = "Moderate Breeze";
+        windSpeedIcon = "wi wi-windy"
+    }
+    if (speed >= 8 && speed <= 10.7) {
+        describeSpeed = "Fresh Breeze";
+        windSpeedIcon = "wi wi-windy"
+    }
+    if (speed >= 10.8 && speed <= 13.8) {
+        describeSpeed = "Strong Breeze";
+        windSpeedIcon = "wi wi-strong-wind"
+    }
+    if (speed >= 13.9 && speed <= 17.1) {
+        describeSpeed = "Moderate Gale";
+        windSpeedIcon = "wi wi-strong-wind"
+    }
+    if (speed >= 17.2 && speed <= 20.7) {
+        describeSpeed = "Gale";
+        windSpeedIcon = "wi wi-strong-wind"
+    }
+    if (speed >= 20.8 && speed <= 24.4) {
+        describeSpeed = "Strong Gale";
+        windSpeedIcon = "wi wi-strong-wind"
+    }
+
+    if (speed >= 24.5 && speed <= 28.4) {
+        describeSpeed = "Storm";
+        windSpeedIcon = "wi wi-sandstorm"
+    }
+    if (speed >= 28.5 && speed <= 32.6) {
+        describeSpeed = "Violent Storm";
+        windSpeedIcon = "wi wi-sandstorm"
+    }
+    if (speed >= 32.7) {
+        describeSpeed = "Hurricane";
+        windSpeedIcon = "wi wi-sandstorm"
+    }
+    //Wind Description
+    if (deg >= 348.75 || deg < 11.25) windangle = "North"
+    if (deg >= 11.25 && deg < 33.75) windangle = "North-NorthEast"
+    if (deg >= 33.75 && deg < 56.25) windangle = "North-East"
+    if (deg >= 56.25 && deg < 78.75) windangle = "East-NorthEast"
+    if (deg >= 78.75 && deg < 101.25) windangle = "East"
+    if (deg >= 101.25 && deg < 123.75) windangle = "East-SouthEast"
+    if (deg >= 123.75 && deg < 146.25) windangle = "South-East"
+    if (deg >= 146.35 && deg < 168.75) windangle = "South-SouthEast"
+    if (deg >= 168.75 && deg < 191.25) windangle = "South"
+    if (deg >= 191.25 && deg < 213.75) windangle = "South-SouthWest"
+    if (deg >= 213.75 && deg < 236.25) windangle = "South-West"
+    if (deg >= 236.25 && deg < 258.75) windangle = "West-SouthWest"
+    if (deg >= 258.75 && deg < 281.25) windangle = "West"
+    if (deg >= 281.25 && deg < 303.75) windangle = "West-NorthWest"
+    if (deg >= 303.75 && deg < 326.25) windangle = "North-West"
+    if (deg >= 326.25 && deg < 348.75) windangle = "North-NorthWest"
+
+
+    $(target[0]).text(speed + "m/s " + describeSpeed)
+    $(target[1]).text(deg + "deg " + windangle)
+    $(target[2]).addClass(iconConstructor)
+    $(target[3]).addClass(windSpeedIcon)
+    return [describeSpeed, windangle]
 }
+//Same as winddescription
 const CloudChecker = (time, percent) => {
 
 
@@ -1508,31 +1577,24 @@ const converter = (id, value) => {
 }
 //Wikipedia Search
 const searchWiki = (cityName) => {
-    axios.get("https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*", {
+    var WikiRequest = new Request(`https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*&titles=${cityName}&prop=extracts&format=json&exchars=200&exlimit=20`)
+    fetch(WikiRequest).then(response => response.json())
+        .then(json => {
 
-        params: {
+            let propName = Object.keys(json.query.pages)
 
-            titles: cityName,
-            exchars: 200,
-            exlimit: 200,
-            prop: "extracts",
-            format: "json"
+            let article = json.query.pages[propName].extract
 
-        }
-    }).then(result => {
+            let regex = /[.]/i
+            let lastIndex = article.match(regex).index;
 
-        let propName = Object.keys(result.data.query.pages)
+            $("#article").text(article.substring(0, lastIndex))
+            //handle json response
+        })
+        .catch(error => {
+            console.warn(error)
+        })
 
-        let article = result.data.query.pages[propName].extract
-        console.log(article)
-        let regex = /[.]/i
-        let lastIndex = article.match(regex).index;
-
-        $("#article").text(article.substring(0, lastIndex))
-
-    }).catch(error => {
-        console.log(error)
-    })
 }
 //Population
 const definePopulation = (population) => {
@@ -1565,7 +1627,7 @@ const searchImage = function (cityName) {
 
 
 }
-//Width Change Add ResponsiveNess
+//Width Change Add ResponsiveNess reuired in app
 const changeListStyle = (width) => {
     if (width < 768) {
         $("#toolbar").removeClass("toolbar")
@@ -1577,7 +1639,7 @@ const changeListStyle = (width) => {
         $("#listOfWeather").children().removeClass("list-group-item")
     }
 }
-//Update Weather Icons
+//Update Weather Icons required in weatherUpdates
 const updateIcon = (time, iconCode, target, ifDateText) => {
     let numberToSearchFor = ifDateText ? 11 : 16;
 
@@ -1613,17 +1675,50 @@ const addSuffixToDay = (dateText) => {
     return dateText
 
 }
-//set ID for dynamically generated or appended divs
+//set ID for dynamically generated or appended divs searchWEatherForeCast
 const setAttributeId = (selector, variable) => {
     $(selector).attr("id", function (i) {
         return variable + i
     })
 }
+const searchNews = (query, queryType,date) => {
+    let url = ""
+    if (queryType === "country") url = `https://newsapi.org/v2/top-headlines?country=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`;
+    if (queryType === "source") url = `https://newsapi.org/v2/top-headlines?sources=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`
+    if (queryType === "query") url = `https://newsapi.org/v2/everything?q=${query}&from=${date}&sortBy=popularity&apiKey=1192d8d426224ccba317c5f3a56980e3`
+
+
+
+
+
+
+
+    var newsReq = new Request(url);
+    fetch(newsReq)
+        .then(response => response.json())
+        .then(json => {
+            console.log(json)
+            json.articles.forEach((element, i) => {
+
+                $("#NewsApi").append("<div class=media>" + "<img class=imageUrl>" + "<div class=media-body>" + "<h5 class=title>" + element.title + "</h5>" + "<p class=author>" + element.author + "</p>" + "<p class=time>" + element.publishedAt + "</p>" + "<p class=desc>" + element.description + "</p>" + "<p class=src>" + element.source.name + "</p>" + "<a class=url>" + "Read More" + "</a>" + "</div>" + "</div>")
+                setAttributeId(".imageUrl", "Images")
+                $(".media").addClass("bg-light text-dark border-bottom")
+                $(".imageUrl").addClass("align-self-start img-fluid mr-3 news-images")
+                $(`#Images${i}`).attr("src", element.urlToImage)
+
+
+            })
+
+        }).catch(error => {
+            console.warn(error)
+        })
+}
 //SearchWeather For The Day
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
-
-        $("#flagIcon ").addClass(`flag-icon flag-icon-${result.sys.country}`.toLowerCase());
+        let country = result.sys.country.toLowerCase()
+        $("#flagIcon ").addClass(`flag-icon flag-icon-${country}`);
+        searchNews(country,"country")
         $("#cityName").text(result.name);
 
         let unitsForNow = result.main;
@@ -1641,10 +1736,10 @@ const SearchWeather = (cityName) => {
             let mainMessage = element.message;
         })
 
-        $("#CloudyPercent").text(result.clouds.all + " %")
+        $("#CloudyPercent").text(result.clouds.all + "%")
         $("#CloudDesc").text(CloudChecker(dateString.substring(16, 18), result.clouds.all))
 
-console.log(DescribeWind(result.wind.speed))
+        DescribeWind(result.wind.speed, result.wind.deg, ["#WindValue", "#WindDesc", "#windDegIcon", "#windSpeedIcon"])
 
 
 
@@ -1799,8 +1894,9 @@ module.exports = $(document).ready(() => {
     searchWiki("London");
 
     $("#searchButton").bind("click", () => {
-        $("#minTemp,#maxTemp,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
-        $("#listOfWeather").empty()
+
+        $("#minTemp,#NewsApi,#maxTemp,#listOfWeather,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
+
         $("#iconForCurrent").removeClass()
         $("#flagIcon ").removeClass();
         //  searchImage($("#cityValue").val());

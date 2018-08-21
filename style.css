@@ -11,7 +11,11 @@
     border-color: #fff transparent transparent transparent;
     border-radius: 50%/100px 100px 0 0;
 }
+.news-images{
+    height:20vh;
+    width:20vw;
 
+}
 
 
 body {
