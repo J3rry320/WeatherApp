@@ -1454,6 +1454,7 @@ const Weather=require("./new")
 const axios = require('axios');
 
 
+
 //Describe Wind REquored in searchWEather and searchWEatherFOreCast
 const DescribeWind = (speed, deg, target) => {
 
@@ -1681,7 +1682,10 @@ const setAttributeId = (selector, variable) => {
         return variable + i
     })
 }
-const searchNews = (query, queryType,date) => {
+const slickCreator = (container, options) => {
+    $(container).slick(options)
+}
+const searchNews = (query, queryType, date) => {
     let url = ""
     if (queryType === "country") url = `https://newsapi.org/v2/top-headlines?country=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`;
     if (queryType === "source") url = `https://newsapi.org/v2/top-headlines?sources=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`
@@ -1700,12 +1704,46 @@ const searchNews = (query, queryType,date) => {
             console.log(json)
             json.articles.forEach((element, i) => {
 
-                $("#NewsApi").append("<div class=media>" + "<img class=imageUrl>" + "<div class=media-body>" + "<h5 class=title>" + element.title + "</h5>" + "<p class=author>" + element.author + "</p>" + "<p class=time>" + element.publishedAt + "</p>" + "<p class=desc>" + element.description + "</p>" + "<p class=src>" + element.source.name + "</p>" + "<a class=url>" + "Read More" + "</a>" + "</div>" + "</div>")
+                $("#NewsApi").append("<div class=media>" + "<center>" + "<img class=imageUrl>" + "</center>" + "<div class=media-body>" + "<h5 class=title>" + element.title + "</h5>" + "<p class=author>" + element.author + "</p>" + "<p class=time>" + element.publishedAt + "</p>" + "<p class=desc>" + element.description + "</p>" + "<p class=src>" + element.source.name + "</p>" + "<a class=url>" + "Read More" + "</a>" + "</div>" + "</div>")
                 setAttributeId(".imageUrl", "Images")
-                $(".media").addClass("bg-light text-dark border-bottom")
-                $(".imageUrl").addClass("align-self-start img-fluid mr-3 news-images")
+                $(".media").addClass("bg-light  text-dark border-bottom")
+                $(".imageUrl").addClass("align-self-start   news-images")
                 $(`#Images${i}`).attr("src", element.urlToImage)
 
+
+            })
+            slickCreator("#NewsApi", {
+
+                autoplay: true,
+                autoplaySpeed: 2500,
+                speed: 250,
+                infinite: true,
+                slidesToShow: 2,
+                slidesToScroll: 2,
+
+                responsive: [
+
+                    {
+                        breakpoint: 600,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    },
+                    {
+                        breakpoint: 480,
+                        settings: {
+                            slidesToShow: 1,
+                            slidesToScroll: 1
+                        }
+                    }
+
+                ],
+
+
+                focusOnSelect: true,
+                mobileFirst: true,
+                swipeToSlide: true
 
             })
 
@@ -1718,7 +1756,7 @@ const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         let country = result.sys.country.toLowerCase()
         $("#flagIcon ").addClass(`flag-icon flag-icon-${country}`);
-        searchNews(country,"country")
+        searchNews(country, "country")
         $("#cityName").text(result.name);
 
         let unitsForNow = result.main;
@@ -1882,6 +1920,7 @@ const SearchWeatherForecast = (cityName) => {
 
 module.exports = $(document).ready(() => {
 
+
     $(window).resize(() => {
         changeListStyle(document.body.clientWidth);
 
@@ -1897,8 +1936,8 @@ module.exports = $(document).ready(() => {
 
         $("#minTemp,#NewsApi,#maxTemp,#listOfWeather,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
 
-        $("#iconForCurrent").removeClass()
-        $("#flagIcon ").removeClass();
+        $("#iconForCurrent,#flagIcon,#NewsApi ").removeClass()
+
         //  searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
