@@ -1537,7 +1537,7 @@ const DescribeWind = (speed, deg, target) => {
     $(target[1]).text(deg + "deg " + windangle)
     $(target[2]).addClass(iconConstructor)
     $(target[3]).addClass(windSpeedIcon)
-    return [describeSpeed, windangle]
+
 }
 //Same as winddescription
 const CloudChecker = (time, percent) => {
@@ -1578,23 +1578,33 @@ const converter = (id, value) => {
 }
 //Wikipedia Search
 const searchWiki = (cityName) => {
-    var WikiRequest = new Request(`https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*&titles=${cityName}&prop=extracts&format=json&exchars=200&exlimit=20`)
-    fetch(WikiRequest).then(response => response.json())
-        .then(json => {
 
-            let propName = Object.keys(json.query.pages)
 
-            let article = json.query.pages[propName].extract
+    axios.get("https://en.wikipedia.org/w/api.php?action=query&exintro&explaintext&origin=*", {
 
-            let regex = /[.]/i
-            let lastIndex = article.match(regex).index;
+        params: {
 
-            $("#article").text(article.substring(0, lastIndex))
-            //handle json response
-        })
-        .catch(error => {
-            console.warn(error)
-        })
+            titles: cityName,
+            exchars: 200,
+            exlimit: 200,
+            prop: "extracts",
+            format: "json"
+
+        }
+    }).then(result => {
+
+        let propName = Object.keys(result.data.query.pages)
+
+        let article = result.data.query.pages[propName].extract
+        console.log(article)
+        let regex = /[.]/i
+        let lastIndex = article.match(regex).index;
+
+        $("#article").text(article.substring(0, lastIndex))
+
+    }).catch(error => {
+        console.log(error)
+    })
 
 }
 //Population
@@ -1690,13 +1700,6 @@ const searchNews = (query, queryType, date) => {
     if (queryType === "country") url = `https://newsapi.org/v2/top-headlines?country=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`;
     if (queryType === "source") url = `https://newsapi.org/v2/top-headlines?sources=${query}&apiKey=1192d8d426224ccba317c5f3a56980e3`
     if (queryType === "query") url = `https://newsapi.org/v2/everything?q=${query}&from=${date}&sortBy=popularity&apiKey=1192d8d426224ccba317c5f3a56980e3`
-
-
-
-
-
-
-
     var newsReq = new Request(url);
     fetch(newsReq)
         .then(response => response.json())
@@ -1709,8 +1712,6 @@ const searchNews = (query, queryType, date) => {
                 $(".media").addClass("bg-light  text-dark border-bottom")
                 $(".imageUrl").addClass("align-self-start   news-images")
                 $(`#Images${i}`).attr("src", element.urlToImage)
-
-
             })
             slickCreator("#NewsApi", {
 
@@ -1756,7 +1757,7 @@ const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
         let country = result.sys.country.toLowerCase()
         $("#flagIcon ").addClass(`flag-icon flag-icon-${country}`);
-        searchNews(country, "country")
+        // searchNews(country, "country")
         $("#cityName").text(result.name);
 
         let unitsForNow = result.main;
@@ -1776,12 +1777,7 @@ const SearchWeather = (cityName) => {
 
         $("#CloudyPercent").text(result.clouds.all + "%")
         $("#CloudDesc").text(CloudChecker(dateString.substring(16, 18), result.clouds.all))
-
         DescribeWind(result.wind.speed, result.wind.deg, ["#WindValue", "#WindDesc", "#windDegIcon", "#windSpeedIcon"])
-
-
-
-
         let sunrise = new Date(result.sys.sunrise * 1000).toString();
         let sunset = new Date(result.sys.sunset * 1000).toString();
         let visibility = result.visibility;
@@ -1926,6 +1922,16 @@ module.exports = $(document).ready(() => {
 
     })
     changeListStyle(document.body.clientWidth);
+    $("#hourlyForecast").bind("click", () => {
+
+        $("#hourlyForecast").addClass("d-none")
+        $("#dailyForecast").removeClass("d-none")
+        $("#temp,#minTemp,#NewsApi,#maxTemp,#listOfWeather,#Visibility,#CloudDesc,#CloudyPercent,#WindValue,#WindDesc,#cityName,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
+        $("#windSpeedIcon,#windDegIcon,#iconForCurrent,#flagIcon,#NewsApi ").removeClass()
+        let value = ($("#cityValue").val().length === 0) ? "London" : $("#cityValue").val()
+        SearchWeatherForecast(value)
+    })
+
 
     // searchImage("London");
     //SearchWeatherForecast("London");
@@ -1934,14 +1940,15 @@ module.exports = $(document).ready(() => {
 
     $("#searchButton").bind("click", () => {
 
-        $("#minTemp,#NewsApi,#maxTemp,#listOfWeather,#temp,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
 
-        $("#iconForCurrent,#flagIcon,#NewsApi ").removeClass()
+        $("#temp,#minTemp,#NewsApi,#maxTemp,#listOfWeather,#Visibility,#CloudDesc,#CloudyPercent,#WindValue,#WindDesc,#cityName,#pressure,#humidity,#Description,#sunriseTime,#sunsetTime").empty()
+
+        $("#windSpeedIcon,#windDegIcon,#iconForCurrent,#flagIcon,#NewsApi ").removeClass()
 
         //  searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
-        // SearchWeatherForecast($("#cityValue").val())
+
 
     })
 
