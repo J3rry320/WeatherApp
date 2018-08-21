@@ -1450,7 +1450,47 @@ const Weather=require("./new")
 
 
 },{"./new":28}],28:[function(require,module,exports){
+"use strict"
 const axios = require('axios');
+const DescribeWind = (speed, deg, target) => {
+    let describeSpeed = "";
+    let windangle = "";
+    if (speed < 0.3) describeSpeed = "calm"
+    if (speed >= 0.3 && speed <= 1.5) describeSpeed = "Light Air"
+    if (speed >= 1.6 && speed <= 3.3) describeSpeed = "Light breeze"
+    if (speed >= 3.4 && speed < 5.5) describeSpeed = "Gentle Breeze"
+    if (speed >= 5.5 && speed <= 7.9) describeSpeed = "Moderate Breeze"
+    if (speed >= 8 && speed <= 10.7) describeSpeed = "Fresh Breeze"
+    if (speed >= 10.8 && speed <= 13.8) describeSpeed = "Strong Breeze"
+    if (speed >= 13.9 && speed <= 17.1) describeSpeed = "Moderate Gale"
+    if (speed >= 17.2 && speed <= 20.7) describeSpeed = "Gale"
+    if (speed >= 20.8 && speed <= 24.4) describeSpeed = "Strong Gale"
+    if (speed >= 24.5 && speed <= 28.4) describeSpeed = "Storm"
+    if (speed >= 28.5 && speed <= 32.6) describeSpeed = "Violent Storm"
+    if (speed >= 32.7) describeSpeed = "Hurricane"
+    return describeSpeed
+}
+const CloudChecker = (time, percent) => {
+
+
+    let checker = (time > 5 && time < 18) ? "day" : "night";
+
+
+    let ValueToBeReturnedWhileChecking = null
+    if (checker === "day") ValueToBeReturnedWhileChecking = true
+    else if (checker === "night") ValueToBeReturnedWhileChecking = false
+
+    if (percent >= 0 && percent <= 100) {
+        if (percent >= 0 && percent <= 10) return ValueToBeReturnedWhileChecking ? "Sunny" : "Clear"
+        if (percent > 10 && percent <= 20) return ValueToBeReturnedWhileChecking ? "Partly Sunny" : "Fair"
+        if (percent > 20 && percent <= 30) return ValueToBeReturnedWhileChecking ? "Mostly Sunny" : "Mostly Fair"
+        if (percent > 30 && percent <= 50) return "Partly Cloudy"
+        if (percent > 50 && percent < 75) return "Mostly Cloudy"
+        if (percent >= 75 && percent <= 100) return "Cloudy"
+
+    } else throw new Error("Invalid Value Passed")
+}
+
 //Farhenit Converter
 const converter = (id, value) => {
     switch (id) {
@@ -1542,9 +1582,11 @@ const updateIcon = (time, iconCode, target, ifDateText) => {
     let numberToSearchFor = ifDateText ? 11 : 16;
 
     let timeNow = time.replace(/[- :]/g, " ").charAt(numberToSearchFor) + time.replace(/[- :]/g, " ").charAt(numberToSearchFor + 1);
+    timeNow = parseInt(timeNow)
+    let iconPrefix = (timeNow > 5 && timeNow < 18) ? "day" : "night";
 
-    let iconPrefix = (timeNow > 05 && timeNow < 18) ? "day" : "night";
     $(target).addClass(`wi wi-owm-${iconPrefix}-${iconCode}`)
+
 
 }
 //Add Suffix To the Returned day
@@ -1581,6 +1623,30 @@ const setAttributeId = (selector, variable) => {
 const SearchWeather = (cityName) => {
     $.getJSON(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
 
+        $("#flagIcon ").addClass(`flag-icon flag-icon-${result.sys.country}`.toLowerCase());
+        $("#cityName").text(result.name);
+
+        let unitsForNow = result.main;
+        $("#minTemp").text(unitsForNow.temp_min);
+        $("#maxTemp").text(unitsForNow.temp_max);
+        $("#temp").text(unitsForNow.temp);
+        $("#pressure").text(unitsForNow.pressure + " hPa");
+        $("#humidity").text(unitsForNow.humidity + " %");
+        let dateString = new Date(result.dt * 1000).toString()
+        console.log(dateString)
+        result.weather.forEach(element => {
+
+            updateIcon(dateString, element.id, "#iconForCurrent", false)
+            $("#Description").text(element.description.toUpperCase());
+            let mainMessage = element.message;
+        })
+
+        $("#CloudyPercent").text(result.clouds.all + " %")
+        $("#CloudDesc").text(CloudChecker(dateString.substring(16, 18), result.clouds.all))
+
+console.log(DescribeWind(result.wind.speed))
+
+
 
 
         let sunrise = new Date(result.sys.sunrise * 1000).toString();
@@ -1590,21 +1656,24 @@ const SearchWeather = (cityName) => {
         let sunsetTime = sunset.substring(15, 24)
         $('#sunriseTime').text(sunriseTime + " IST")
         $('#sunsetTime').text(sunsetTime + " IST")
+        console.log(result)
         /*
                 let sunriseTime=new Date(sunrise*1000)
                 let sunsetTime=new Date(sunset*1000) Convert To GMT by toUTCSTRING */
 
         $("#Visibility").text(visibility / 1000 + " km");
-        $("#VisibilityInModal").text(visibility / 1000 + " km");
+
     })
 }
 //Search Weather Forecast Hourly
+
+
 const SearchWeatherForecast = (cityName) => {
 
 
 
     $.getJSON(`https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&units=metric&APPID=725c271cefbc3221ab205ee4ecaaefaa`, (result) => {
-        console.log(result)
+
         let currentWeather = result.list[0];
 
 
@@ -1725,7 +1794,7 @@ module.exports = $(document).ready(() => {
     changeListStyle(document.body.clientWidth);
 
     // searchImage("London");
-    SearchWeatherForecast("London");
+    //SearchWeatherForecast("London");
     SearchWeather("London")
     searchWiki("London");
 
@@ -1737,7 +1806,7 @@ module.exports = $(document).ready(() => {
         //  searchImage($("#cityValue").val());
         SearchWeather($("#cityValue").val());
         searchWiki($("#cityValue").val())
-        SearchWeatherForecast($("#cityValue").val())
+        // SearchWeatherForecast($("#cityValue").val())
 
     })
 
